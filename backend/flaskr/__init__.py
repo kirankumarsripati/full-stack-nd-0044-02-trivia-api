@@ -9,6 +9,17 @@ from models import setup_db, Question, Category
 QUESTIONS_PER_PAGE = 10
 
 
+def paginate_questions(request, selection):
+    page = request.args.get('page', 1, type=int)
+    start = (page - 1) * QUESTIONS_PER_PAGE
+    end = start + QUESTIONS_PER_PAGE
+
+    questions = [question.format() for question in selection]
+    current_questions = questions[start:end]
+
+    return current_questions
+
+
 def create_app(test_config=None):
     # create and configure the app
     app = Flask(__name__)
@@ -30,6 +41,14 @@ def create_app(test_config=None):
                              'GET,PATCH,POST,DELETE,OPTIONS')
         return response
 
+    '''Returns a list of categories dict'''
+    def get_categories_json():
+        categories = Category.query.all()
+        if not categories:
+            abort(404, description={'message': 'no category found'})
+
+        return [category.format() for category in categories]
+
     '''
     DONE:
     Create an endpoint to handle GET requests
@@ -38,12 +57,8 @@ def create_app(test_config=None):
     @app.route('/categories', methods=['GET'])
     def get_categories():
         '''Returns all the categories.'''
-        categories = Category.query.all()
 
-        if not categories:
-            abort(404, description={'message': 'no category found'})
-
-        categories_json = [category.format() for category in categories]
+        categories_json = get_categories_json()
 
         return jsonify({
             'success': True,
@@ -51,7 +66,7 @@ def create_app(test_config=None):
         })
 
     '''
-    @TODO:
+    DONE:
     Create an endpoint to handle GET requests for questions,
     including pagination (every 10 questions).
     This endpoint should return a list of questions,
@@ -63,6 +78,23 @@ def create_app(test_config=None):
     screen for three pages.
     Clicking on the page numbers should update the questions.
     '''
+    @app.route('/questions', methods=['GET'])
+    def get_questions():
+        selection = Question.query.order_by(Question.id).all()
+        current_questions = paginate_questions(request, selection)
+
+        if len(current_questions) == 0:
+            abort(404, {'message': 'questions not found'})
+
+        categories_json = get_categories_json()
+
+        return jsonify({
+            'success': True,
+            'questions': current_questions,
+            'total_questions': len(Question.query.all()),
+            'categories': categories_json,
+            'current_category': None
+        })
 
     '''
     @TODO:
