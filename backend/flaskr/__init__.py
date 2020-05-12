@@ -37,11 +37,11 @@ def create_app(test_config=None):
     '''
     @app.route('/categories', methods=['GET'])
     def get_categories():
+        '''Returns all the categories.'''
         categories = Category.query.all()
 
-        # TODO: define 404 route
         if not categories:
-            abort(404)
+            abort(404, description={'message': 'no category found'})
 
         categories_json = [category.format() for category in categories]
 
@@ -59,7 +59,8 @@ def create_app(test_config=None):
 
     TEST: At this point, when you start the application
     you should see questions and categories generated,
-    ten questions per page and pagination at the bottom of the screen for three pages.
+    ten questions per page and pagination at the bottom of the
+    screen for three pages.
     Clicking on the page numbers should update the questions.
     '''
 
@@ -67,7 +68,8 @@ def create_app(test_config=None):
     @TODO:
     Create an endpoint to DELETE question using a question ID.
 
-    TEST: When you click the trash icon next to a question, the question will be removed.
+    TEST: When you click the trash icon next to a question, the
+    question will be removed.
     This removal will persist in the database and when you refresh the page.
     '''
 
@@ -78,8 +80,8 @@ def create_app(test_config=None):
     category, and difficulty score.
 
     TEST: When you submit a question on the "Add" tab,
-    the form will clear and the question will appear at the end of the last page
-    of the questions list in the "List" tab.
+    the form will clear and the question will appear at the end of
+    the last page of the questions list in the "List" tab.
     '''
 
     '''
@@ -114,9 +116,43 @@ def create_app(test_config=None):
     '''
 
     '''
-    @TODO:
+    DONE:
     Create error handlers for all expected errors
     including 404 and 422.
     '''
+    @app.errorhandler(404)
+    def not_found(error):
+        return jsonify({
+            'success': False,
+            'error': 404,
+            'message': get_error_message(error, 'resource not found')
+        }), 404
+
+    @app.errorhandler(422)
+    def unprocessable_entity(error):
+        return jsonify({
+            'success': False,
+            'error': 422,
+            'message': get_error_message(error, 'unprocessable entity')
+        }), 422
+
+    def get_error_message(error, default_message):
+        '''
+        Returns if there is any error message provided in
+        error.description.message else default_message
+        This can be passed by calling
+        abort(404, description={'message': 'your message'})
+
+        Parameters:
+        error (werkzeug.exceptions.NotFound): error object
+        default_message (str): default message if custom message not available
+
+        Returns:
+        str: Custom error message or default error message
+        '''
+        try:
+            return error.description['message']
+        except TypeError:
+            return default_message
 
     return app
