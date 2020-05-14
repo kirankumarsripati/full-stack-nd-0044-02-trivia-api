@@ -1,6 +1,7 @@
 import os
 from flask import Flask, request, abort, jsonify
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.exc import OperationalError
 from flask_cors import CORS
 import random
 
@@ -106,7 +107,6 @@ def create_app(test_config=None):
     '''
 
     '''
-    @TODO:
     Create an endpoint to POST a new question,
     which will require the question and answer text,
     category, and difficulty score.
@@ -114,10 +114,7 @@ def create_app(test_config=None):
     TEST: When you submit a question on the "Add" tab,
     the form will clear and the question will appear at the end of
     the last page of the questions list in the "List" tab.
-    '''
 
-    '''
-    @TODO:
     Create a POST endpoint to get questions based on a search term.
     It should return any questions for whom the search term
     is a substring of the question.
@@ -126,6 +123,76 @@ def create_app(test_config=None):
     only question that include that string within their question.
     Try using the word "title" to start.
     '''
+    @app.route('/questions', methods=['POST'])
+    def create_or_search_question():
+        '''
+        Handle 2 cases
+        1. Create new question
+        2. Search questions
+        '''
+        body = request.get_json()
+
+        if not body:
+            abort(400, {'message': 'invalid body JSON'})
+
+        search_term = body.get('searchTerm', None)
+
+        if search_term:
+            page = body.get('page', 1)
+            # search for the term in the question
+            search_questions = Question.query.filter(Question.question.ilike(
+                '%' + search_term + '%')).paginate(
+                    page,
+                    QUESTIONS_PER_PAGE,
+                    False)
+
+            questions_json = [question.format()
+                              for question in search_questions.items]
+
+            if len(questions_json) == 0:
+                abort(404, {'message': 'no questions found with term - {}'.format(
+                    search_term)})
+
+            return jsonify({
+                'success': True,
+                'questions': questions_json,
+                'total_questions': search_questions.total,
+                'current_category': None
+            })
+
+        # if not search term, then create question
+        new_question = body.get('question', None)
+        new_answer = body.get('answer', None)
+        new_category = body.get('category', None)
+        new_difficulty = body.get('difficulty', None)
+
+        if not new_question:
+            abort(400, {'message': '{} cannot be blank'.format('question')})
+
+        if not new_answer:
+            abort(400, {'message': '{} cannot be blank'.format('answer')})
+
+        if not new_category:
+            abort(400, {'message': '{} cannot be blank'.format('category')})
+
+        if not new_difficulty:
+            abort(400, {'message': '{} cannot be blank'.format('difficulty')})
+
+        try:
+            question = Question(
+                question=new_question,
+                answer=new_answer,
+                category=new_category,
+                difficulty=new_difficulty
+            )
+            question.insert()
+
+            return jsonify({
+                'success': True,
+                'created': question.id
+            })
+        except OperationalError:
+            abort(422)
 
     '''
     @TODO:
@@ -146,6 +213,14 @@ def create_app(test_config=None):
     one question at a time is displayed, the user is allowed to answer
     and shown whether they were correct or not.
     '''
+
+    @app.errorhandler(400)
+    def not_found(error):
+        return jsonify({
+            'success': False,
+            'error': 400,
+            'message': get_error_message(error, 'bad request')
+        }), 400
 
     '''
     DONE:
