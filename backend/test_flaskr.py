@@ -79,6 +79,7 @@ class TriviaTestCase(unittest.TestCase):
 
         self.assertEqual(res.status_code, 400)
         self.assertEqual(data['success'], False)
+        self.assertEqual(data['error'], 400)
         self.assertTrue(data['message'], '{} cannot be blank'.format(missing))
 
     def test_create_question(self):
@@ -148,6 +149,7 @@ class TriviaTestCase(unittest.TestCase):
 
         self.assertEqual(res.status_code, 404)
         self.assertEqual(data['success'], False)
+        self.assertEqual(data['error'], 404)
         self.assertEqual(
             data['message'], 'no questions found with term - {}'.format(
                 search_json['searchTerm']))
@@ -162,10 +164,44 @@ class TriviaTestCase(unittest.TestCase):
 
         self.assertEqual(res.status_code, 404)
         self.assertEqual(data['success'], False)
+        self.assertEqual(data['error'], 404)
         self.assertEqual(
             data['message'], 'no questions found with term - {}'.format(
                 search_json['searchTerm']))
 
+    def test_delete_question(self):
+        '''Delete a question'''
+        # To work in any case, first add a question
+        new_question = {
+            'question': 'In which city is Jiddu Krishnamurti Foundation \
+                School in Maharashtra?',
+            'answer': 'Pune',
+            'category': 3,
+            'difficulty': 3
+        }
+
+        res = self.client().post('/questions', json=new_question)
+        data = json.loads(res.data)
+        # store added question id
+        question_id = data['created']
+
+        # delete added question
+        res = self.client().delete('/questions/{}'.format(question_id))
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertEqual(data['deleted'], question_id)
+
+    def test_404_delete_question(self):
+        '''Delete a non existing question id'''
+        res = self.client().delete('/questions/9999999')
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 404)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['error'], 404)
+        self.assertEqual(data['message'], 'question not found')
 
 # Make the tests conveniently executable
 if __name__ == "__main__":
