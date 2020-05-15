@@ -143,7 +143,7 @@ def create_app(test_config=None):
         body = request.get_json()
 
         if not body:
-            abort(400, {'message': 'invalid body JSON'})
+            abort(422, {'message': 'invalid body JSON'})
 
         search_term = body.get('searchTerm', None)
 
@@ -177,16 +177,16 @@ def create_app(test_config=None):
         new_difficulty = body.get('difficulty', None)
 
         if not new_question:
-            abort(400, {'message': '{} cannot be blank'.format('question')})
+            abort(422, {'message': '{} cannot be blank'.format('question')})
 
         if not new_answer:
-            abort(400, {'message': '{} cannot be blank'.format('answer')})
+            abort(422, {'message': '{} cannot be blank'.format('answer')})
 
         if not new_category:
-            abort(400, {'message': '{} cannot be blank'.format('category')})
+            abort(422, {'message': '{} cannot be blank'.format('category')})
 
         if not new_difficulty:
-            abort(400, {'message': '{} cannot be blank'.format('difficulty')})
+            abort(422, {'message': '{} cannot be blank'.format('difficulty')})
 
         try:
             question = Question(
@@ -251,6 +251,52 @@ def create_app(test_config=None):
     one question at a time is displayed, the user is allowed to answer
     and shown whether they were correct or not.
     '''
+    @app.route('/quizzes', methods=['POST'])
+    def get_quiz():
+        # There 2 cases
+        # Case 1 - Category Provided means only questions from that category
+        # Case 2 - No Category means all questions
+
+        body = request.get_json()
+
+        if body:
+            previous_questions = body.get('previous_questions', None)
+            quiz_category = body.get('quiz_category', None)
+        else:
+            previous_questions = None
+            quiz_category = None
+
+        if not quiz_category:
+            if not previous_questions:
+                quiz_questions = Question.query.all()
+            else:
+                quiz_questions = Question.query.filter(
+                    Question.id.notin_(previous_questions)
+                ).all()
+        else:
+            if not previous_questions:
+                quiz_questions = Question.query.filter(
+                    Question.category == quiz_category['id']
+                ).all()
+            else:
+                quiz_questions = Question.query.filter(
+                    Question.category == quiz_category['id']
+                ).filter(
+                    Question.id.notin_(previous_questions)
+                ).all()
+
+        if quiz_questions:
+            quiz_questions_json = [question.format()
+                                   for question in quiz_questions]
+            random_question = quiz_questions_json[random.randint(
+                0, len(quiz_questions_json) - 1)]
+        else:
+            random_question = None
+
+        return jsonify({
+            'success': True,
+            'question': random_question
+        })
 
     @app.errorhandler(400)
     def not_found(error):
@@ -272,6 +318,14 @@ def create_app(test_config=None):
             'error': 404,
             'message': get_error_message(error, 'resource not found')
         }), 404
+
+    @app.errorhandler(405)
+    def not_found(error):
+        return jsonify({
+            'success': False,
+            'error': 405,
+            'message': get_error_message(error, 'method not allowed')
+        }), 405
 
     @app.errorhandler(422)
     def unprocessable_entity(error):

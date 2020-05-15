@@ -77,9 +77,9 @@ class TriviaTestCase(unittest.TestCase):
         res = self.client().post('/questions', json=missing_field_question)
         data = json.loads(res.data)
 
-        self.assertEqual(res.status_code, 400)
+        self.assertEqual(res.status_code, 422)
         self.assertEqual(data['success'], False)
-        self.assertEqual(data['error'], 400)
+        self.assertEqual(data['error'], 422)
         self.assertTrue(data['message'], '{} cannot be blank'.format(missing))
 
     def test_create_question(self):
@@ -233,6 +233,58 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data['success'], False)
         self.assertEqual(data['error'], 404)
         self.assertEqual(data['message'], 'questions not found')
+
+    def test_get_quiz_all(self):
+        '''Get quiz for all category'''
+        res = self.client().post('/quizzes')
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertTrue(data['question']['question'])
+
+    def test_get_quiz_with_category(self):
+        '''Get quiz for specific category'''
+        quiz_info = {
+            'quiz_category': {
+                'id': 1,
+                'type': 'Science'
+            }
+        }
+        res = self.client().post('/quizzes', json=quiz_info)
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertTrue(data['question']['question'])
+
+    def test_get_quiz_with_category_prev_questions(self):
+        '''Get quiz for specific category and previous questions'''
+        quiz_info = {
+            'previous_questions': [20],
+            'quiz_category': {
+                'id': 1,
+                'type': 'Science'
+            }
+        }
+        res = self.client().post('/quizzes', json=quiz_info)
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertTrue(data['question']['question'])
+        self.assertTrue(data['question']['id']
+                        not in quiz_info['previous_questions'])
+
+    def test_405_get_quiz(self):
+        '''Get quizzes with GET method'''
+        res = self.client().get('/quizzes')
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 405)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['error'], 405)
+        self.assertEqual(data['message'], 'method not allowed')
 
 
 # Make the tests conveniently executable
