@@ -5,7 +5,6 @@ import {
   Switch
 } from 'react-router-dom'
 
-// import logo from './logo.svg';
 import './stylesheets/App.css';
 import FormView from './components/FormView';
 import QuestionView from './components/QuestionView';
@@ -17,8 +16,8 @@ class App extends Component {
   render() {
     return (
     <div className="App">
-      <Header path />
       <Router>
+        <Header path />
         <Switch>
           <Route path="/" exact component={QuestionView} />
           <Route path="/add" component={FormView} />

@@ -1,5 +1,9 @@
 import React, { Component } from 'react';
-import logo from '../logo.svg';
+import { NavLink } from 'react-router-dom'
+import {
+  Menu,
+  Image,
+} from 'semantic-ui-react'
 import '../stylesheets/Header.css';
 
 class Header extends Component {
@@ -10,12 +14,15 @@ class Header extends Component {
 
   render() {
     return (
-      <div className="App-header">
-        <h1 onClick={() => {this.navTo('')}}>Udacitrivia</h1>
-        <h2 onClick={() => {this.navTo('')}}>List</h2>
-        <h2 onClick={() => {this.navTo('/add')}}>Add</h2>
-        <h2 onClick={() => {this.navTo('/play')}}>Play</h2>
-      </div>
+      <Menu borderless>
+        <Menu.Item onClick={() => {this.navTo('')}}>
+          <Image size='mini' src='/paper.svg' />
+        </Menu.Item>
+        <Menu.Item header onClick={() => {this.navTo('')}}>Udacitrivia</Menu.Item>
+        <Menu.Item as={ NavLink } to="/" exact>List</Menu.Item>
+        <Menu.Item as={ NavLink } to="/add">Add</Menu.Item>
+        <Menu.Item as={ NavLink } to="/play">Play</Menu.Item>
+      </Menu>
     );
   }
 }
