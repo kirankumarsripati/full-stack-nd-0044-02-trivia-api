@@ -344,6 +344,14 @@ def create_app(test_config=None):
             'message': get_error_message(error, 'unprocessable entity')
         }), 422
 
+    @app.errorhandler(500)
+    def unprocessable_entity(error):
+        return jsonify({
+            'success': False,
+            'error': 500,
+            'message': get_error_message(error, 'internal server error')
+        }), 500
+
     def get_error_message(error, default_message):
         '''
         Returns if there is any error message provided in
