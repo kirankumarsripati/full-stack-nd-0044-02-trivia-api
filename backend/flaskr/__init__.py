@@ -37,7 +37,12 @@ def create_app(test_config=None):
         if not categories:
             abort(404, description={'message': 'no category found'})
 
-        return [category.format() for category in categories]
+        category_map = {}
+
+        for category in categories:
+            category_map[category.id] = category.type
+
+        return category_map
 
     '''
     DONE:
