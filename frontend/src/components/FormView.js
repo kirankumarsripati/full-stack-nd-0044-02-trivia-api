@@ -110,6 +110,7 @@ class FormView extends Component {
               options={difficultyOptions}
               placeholder='Difficulty'
             />
+            { this.state.categoryOptions &&
             <Form.Select
               onChange={this.handleChange}
               fluid
@@ -117,7 +118,7 @@ class FormView extends Component {
               name="category"
               options={this.state.categoryOptions}
               placeholder='Category'
-            />
+            />}
           </Form.Group>
           <Button type='submit'>Submit</Button>
         </Form>
