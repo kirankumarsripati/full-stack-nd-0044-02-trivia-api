@@ -1,4 +1,9 @@
 import React, { Component } from 'react'
+import {
+  Input,
+  Button,
+} from 'semantic-ui-react'
+
 
 class Search extends Component {
   state = {
@@ -10,21 +15,20 @@ class Search extends Component {
     this.props.submitSearch(this.state.query)
   }
 
-  handleInputChange = () => {
+  handleInputChange = (event, data) => {
     this.setState({
-      query: this.search.value
+      query: data.value
     })
   }
 
   render() {
     return (
       <form onSubmit={this.getInfo}>
-        <input
-          placeholder="Search questions..."
-          ref={input => this.search = input}
+        <Input
+          placeholder='Search questions...'
           onChange={this.handleInputChange}
         />
-        <input type="submit" value="Submit" className="button"/>
+        <Button className="search-btn" type="submit">Search</Button>
       </form>
     )
   }

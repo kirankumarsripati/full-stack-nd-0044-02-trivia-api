@@ -258,7 +258,7 @@ def create_app(test_config=None):
     '''
     @app.route('/quizzes', methods=['POST'])
     def get_quiz():
-        # There 2 cases
+        # There ar 2 cases
         # Case 1 - Category Provided means only questions from that category
         # Case 2 - No Category means all questions
 

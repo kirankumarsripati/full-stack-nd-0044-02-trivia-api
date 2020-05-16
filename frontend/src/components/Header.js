@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { NavLink } from 'react-router-dom'
 import {
+  Container,
   Icon,
   Image,
   Menu,
@@ -31,23 +32,25 @@ class Header extends Component {
     return (
       <>
       <Menu borderless>
-        <Menu.Item onClick={() => {this.navTo('')}}>
-          <Image size='mini' src='/paper.svg' />
-        </Menu.Item>
-        <Menu.Item header onClick={() => {this.navTo('')}}>Udacitrivia</Menu.Item>
-        <Responsive className='menu' getWidth={getWidth} minWidth={Responsive.onlyTablet.minWidth}>
-          <Menu.Item as={ NavLink } to="/" exact>List</Menu.Item>
-          <Menu.Item as={ NavLink } to="/add">Add</Menu.Item>
-          <Menu.Item as={ NavLink } to="/play">Play</Menu.Item>
-        </Responsive>
-        <Menu.Item as={ Responsive }
-          onClick={this.handleToggle}
-          position='right'
-          getWidth={getWidth}
-          maxWidth={Responsive.onlyMobile.maxWidth}
-        >
-          <Icon name='sidebar' />
-        </Menu.Item>
+        <Container>
+          <Menu.Item onClick={() => {this.navTo('')}}>
+            <Image size='mini' src='/paper.svg' />
+          </Menu.Item>
+          <Menu.Item header onClick={() => {this.navTo('')}}>Udacitrivia</Menu.Item>
+          <Responsive className='menu' getWidth={getWidth} minWidth={Responsive.onlyTablet.minWidth}>
+            <Menu.Item as={ NavLink } to="/" exact>List</Menu.Item>
+            <Menu.Item as={ NavLink } to="/add">Add</Menu.Item>
+            <Menu.Item as={ NavLink } to="/play">Play</Menu.Item>
+          </Responsive>
+          <Menu.Item as={ Responsive }
+            onClick={this.handleToggle}
+            position='right'
+            getWidth={getWidth}
+            maxWidth={Responsive.onlyMobile.maxWidth}
+          >
+            <Icon name='sidebar' />
+          </Menu.Item>
+        </Container>
       </Menu>
 
       <Responsive

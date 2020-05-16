@@ -9,12 +9,12 @@
 }
 
 .categories-list > form {
-  width: 60%;
+  width: 15rem;
+  margin-left: 0;
 }
 
-.questions-list {
-  flex-basis: 75%;
-  text-align: center;
+.categories-list .search-btn {
+  margin-top: 10px;
 }
 
 .Question-holder {
