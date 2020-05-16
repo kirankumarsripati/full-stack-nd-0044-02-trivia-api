@@ -271,6 +271,10 @@ def create_app(test_config=None):
             previous_questions = None
             quiz_category = None
 
+        if quiz_category:
+            if int(quiz_category['id']) == 0:
+                quiz_category = None
+
         if not quiz_category:
             if not previous_questions:
                 quiz_questions = Question.query.all()

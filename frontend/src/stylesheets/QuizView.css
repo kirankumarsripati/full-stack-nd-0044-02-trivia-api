@@ -6,8 +6,8 @@
     color: red;
 }
 
-#categories .item .category {
-    display: inline-block;
+.ui .item .category {
+    display: inline-block !important;
     height: 20px;
     width: auto;
     padding-right: 20px;
@@ -15,4 +15,8 @@
 
 .ui.label>img {
     margin-right: 10px;
+}
+
+.ui .menu-center {
+    margin: 0 auto
 }

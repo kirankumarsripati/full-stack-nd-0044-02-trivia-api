@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import {
+  Button,
   Container,
+  Form,
   Menu,
 } from 'semantic-ui-react'
 import $ from 'jquery';
@@ -26,7 +28,7 @@ class QuizView extends Component {
 
   componentDidMount(){
     $.ajax({
-      url: `/categories`, //TODO: update request URL
+      url: `/categories`, //DONE: update request URL
       type: "GET",
       success: (result) => {
         this.setState({ categories: result.categories })
@@ -52,7 +54,7 @@ class QuizView extends Component {
     if(this.state.currentQuestion.id) { previousQuestions.push(this.state.currentQuestion.id) }
 
     $.ajax({
-      url: '/quizzes', //TODO: update request URL
+      url: '/quizzes', //DONE: update request URL
       type: "POST",
       dataType: 'json',
       contentType: 'application/json',
@@ -106,7 +108,7 @@ class QuizView extends Component {
     return (
       <Container className="center aligned">
         <h2>Choose Category</h2>
-        <Menu pointing vertical id="categories">
+        <Menu pointing vertical className="menu-center">
           <Menu.Item onClick={this.selectCategory}>ALL</Menu.Item>
           {Object.keys(this.state.categories).map((id) => (
             <Menu.Item
@@ -124,10 +126,10 @@ class QuizView extends Component {
 
   renderFinalScore(){
     return(
-      <div className="quiz-play-holder">
-        <div className="final-header"> Your Final Score is {this.state.numCorrect}</div>
-        <div className="play-again button" onClick={this.restartGame}> Play Again? </div>
-      </div>
+      <Container className="center aligned">
+        <h2>Your Final Score is {this.state.numCorrect}</h2>
+        <Button primary onClick={this.restartGame}> Play Again? </Button>
+      </Container>
     )
   }
 
@@ -141,12 +143,12 @@ class QuizView extends Component {
   renderCorrectAnswer(){
     let evaluate =  this.evaluateAnswer()
     return(
-      <div className="quiz-play-holder">
-        <div className="quiz-question">{this.state.currentQuestion.question}</div>
+      <Container className="center aligned">
+        <h3>{this.state.currentQuestion.question}</h3>
         <div className={`${evaluate ? 'correct' : 'wrong'}`}>{evaluate ? "You were correct!" : "You were incorrect"}</div>
         <div className="quiz-answer">{this.state.currentQuestion.answer}</div>
-        <div className="next-question button" onClick={this.getNextQuestion}> Next Question </div>
-      </div>
+        <Button primary onClick={this.getNextQuestion}> Next Question </Button>
+      </Container>
     )
   }
 
@@ -156,13 +158,18 @@ class QuizView extends Component {
       : this.state.showAnswer
         ? this.renderCorrectAnswer()
         : (
-          <div className="quiz-play-holder">
-            <div className="quiz-question">{this.state.currentQuestion.question}</div>
-            <form onSubmit={this.submitGuess}>
-              <input type="text" name="guess" onChange={this.handleChange}/>
-              <input className="submit-guess button" type="submit" value="Submit Answer" />
-            </form>
-          </div>
+          <Container className="center aligned">
+            <h3>{this.state.currentQuestion.question}</h3>
+            <Form onSubmit={this.submitGuess}>
+              <Form.Field>
+                <label>
+                  Your Answer
+                  <input className="answer-input" type="text" name="guess" onChange={this.handleChange}/>
+                </label>
+              </Form.Field>
+              <Button primary type="submit">Submit Answer</Button>
+            </Form>
+          </Container>
         )
   }
 

@@ -33,7 +33,6 @@ class Question extends Component {
           <Item.Extra>
             <Label>
               <img
-                className="category"
                 src={`${category}.svg`}
                 alt={category}
               />
