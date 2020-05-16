@@ -1,4 +1,7 @@
 import React, { Component } from 'react';
+import {
+  Menu,
+} from 'semantic-ui-react'
 
 import '../stylesheets/App.css';
 import Question from './Question';
@@ -120,18 +123,23 @@ class QuestionView extends Component {
   }
 
   render() {
+    const { currentCategory } = this.state
     return (
       <div className="question-view">
         <div className="categories-list">
           <h2 onClick={() => {this.getQuestions()}}>Categories</h2>
-          <ul>
+          <Menu pointing vertical id="categories">
             {Object.keys(this.state.categories).map((id, ) => (
-              <li key={id} onClick={() => {this.getByCategory(id)}}>
-                {this.state.categories[id]}
+              <Menu.Item
+                key={id}
+                active={currentCategory === id}
+                onClick={() => {this.getByCategory(id)}}
+              >
                 <img className="category" src={`${this.state.categories[id]}.svg`}/>
-              </li>
+                {this.state.categories[id]}
+              </Menu.Item>
             ))}
-          </ul>
+          </Menu>
           <Search submitSearch={this.submitSearch}/>
         </div>
         <div className="questions-list">
@@ -141,7 +149,7 @@ class QuestionView extends Component {
               key={q.id}
               question={q.question}
               answer={q.answer}
-              category={this.state.categories[q.category]} 
+              category={this.state.categories[q.category]}
               difficulty={q.difficulty}
               questionAction={this.questionAction(q.id)}
             />
