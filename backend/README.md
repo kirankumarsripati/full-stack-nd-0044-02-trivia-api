@@ -370,12 +370,12 @@ Here is the list of APIs available with Sample Data
       "total_questions": 4
     }
 
-### Get Next Question for Quiz (All Categories)
+### Get next Question for Quiz (All Categories)
 `POST /quizzes`
 
 #### Request
 
-    curl -i -H 'Content-Type: application/json' -X POST http://localhost:5000/quizzes
+    curl -i -H 'Content-Type: application/json' -d '{}' -X POST http://localhost:5000/quizzes
 
 #### Response
 
@@ -398,7 +398,7 @@ Here is the list of APIs available with Sample Data
       "success": true
     }
 
-### Get Next Question for Quiz specific Category
+### Get next Question for Quiz specific Category
 `POST /quizzes`
 
 #### Request
@@ -426,7 +426,7 @@ Here is the list of APIs available with Sample Data
       "success": true
     }
 
-### Get Question for Quiz specific Category with previous Question ID
+### Get next Question for Quiz specific Category with previous Question IDs
 Previous questions are required to avoid repeating same question again
 `POST /quizzes`
 
