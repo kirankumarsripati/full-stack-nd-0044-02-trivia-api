@@ -1,4 +1,8 @@
 import React, { Component } from 'react';
+import {
+  Container,
+  Menu,
+} from 'semantic-ui-react'
 import $ from 'jquery';
 
 import '../stylesheets/QuizView.css';
@@ -100,23 +104,21 @@ class QuizView extends Component {
 
   renderPrePlay(){
     return (
-      <div className="quiz-play-holder">
-        <div className="choose-header">Choose Category</div>
-        <div className="category-holder">
-          <div className="play-category" onClick={this.selectCategory}>ALL</div>
-          {Object.keys(this.state.categories).map(id => {
-          return (
-            <div
+      <Container className="center aligned">
+        <h2>Choose Category</h2>
+        <Menu pointing vertical id="categories">
+          <Menu.Item onClick={this.selectCategory}>ALL</Menu.Item>
+          {Object.keys(this.state.categories).map((id) => (
+            <Menu.Item
               key={id}
-              value={id}
-              className="play-category"
-              onClick={() => this.selectCategory({type:this.state.categories[id], id})}>
+              onClick={() => {this.selectCategory({type: this.state.categories[id], id})}}
+            >
+              <img className="category" src={`${this.state.categories[id]}.svg`} alt={this.state.categories[id]} />
               {this.state.categories[id]}
-            </div>
-          )
-          })}
-        </div>
-      </div>
+            </Menu.Item>
+          ))}
+        </Menu>
+      </Container>
     )
   }
 

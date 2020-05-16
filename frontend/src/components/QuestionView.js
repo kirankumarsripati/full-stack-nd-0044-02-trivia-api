@@ -122,7 +122,7 @@ class QuestionView extends Component {
       <Container>
         <Grid className="question-view">
           <Grid.Row>
-            <Grid.Column compute={12} mobile={12} tablet={3} className="categories-list">
+            <Grid.Column mobile={16} tablet={6} widescreen={4} largeScreen={4} className="categories-list">
               <h2 onClick={() => {this.getQuestions()}}>Categories</h2>
               <Menu pointing vertical id="categories">
                 {Object.keys(this.state.categories).map((id) => (
@@ -138,7 +138,7 @@ class QuestionView extends Component {
               </Menu>
               <Search submitSearch={this.submitSearch}/>
             </Grid.Column>
-            <Grid.Column compute={12} mobile={12} tablet={9} className="questions-list">
+            <Grid.Column mobile={16} tablet={10} widescreen={12} largeScreen={12} className="questions-list">
               <h2>Questions</h2>
               <Item.Group divided>
               {this.state.questions.map((q, ind) => (
