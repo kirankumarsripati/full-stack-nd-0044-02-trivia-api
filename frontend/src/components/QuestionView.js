@@ -2,8 +2,9 @@ import React, { Component } from 'react';
 import {
   Container,
   Item,
-  Menu,
   Grid,
+  Menu,
+  Pagination,
 } from 'semantic-ui-react'
 
 import '../stylesheets/App.css';
@@ -50,20 +51,6 @@ class QuestionView extends Component {
     this.setState({page: num}, () => this.getQuestions());
   }
 
-  createPagination(){
-    let pageNumbers = [];
-    let maxPage = Math.ceil(this.state.totalQuestions / 10)
-    for (let i = 1; i <= maxPage; i++) {
-      pageNumbers.push(
-        <span
-          key={i}
-          className={`page-num ${i === this.state.page ? 'active' : ''}`}
-          onClick={() => {this.selectPage(i)}}>{i}
-        </span>)
-    }
-    return pageNumbers;
-  }
-
   getByCategory= (id) => {
     $.ajax({
       url: `/categories/${id}/questions`, //TODO: update request URL
@@ -80,6 +67,10 @@ class QuestionView extends Component {
         return;
       }
     })
+  }
+
+  onPageChange = (event, data) => {
+    this.selectPage(data.activePage)
   }
 
   submitSearch = (searchTerm) => {
@@ -161,9 +152,11 @@ class QuestionView extends Component {
                 />
                 ))}
               </Item.Group>
-              <div className="pagination-menu">
-                {this.createPagination()}
-              </div>
+              <Pagination
+                defaultActivePage={this.state.page}
+                totalPages={Math.ceil(this.state.totalQuestions / 10)}
+                onPageChange={this.onPageChange}
+              />
             </Grid.Column>
           </Grid.Row>
         </Grid>

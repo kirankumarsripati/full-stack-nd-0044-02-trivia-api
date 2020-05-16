@@ -3,7 +3,6 @@ import {
   Button,
   Container,
   Form,
-  Input,
 } from 'semantic-ui-react'
 import $ from 'jquery';
 
@@ -56,7 +55,7 @@ class FormView extends Component {
   submitQuestion = (event) => {
     event.preventDefault();
     $.ajax({
-      url: '/questions', //TODO: update request URL
+      url: '/questions', //DONE: update request URL
       type: "POST",
       dataType: 'json',
       contentType: 'application/json',
@@ -102,9 +101,6 @@ class FormView extends Component {
               <input type="text" name="answer" onChange={this.handleChange}/>
             </label>
           </Form.Field>
-          <Form.Field>
-
-          </Form.Field>
           <Form.Group widths='equal'>
             <Form.Select
               onChange={this.handleChange}
@@ -131,36 +127,3 @@ class FormView extends Component {
 }
 
 export default FormView;
-
-
-{/* <form className="form-view" id="add-question-form" onSubmit={this.submitQuestion}>
-  <label>
-    Question
-    <input type="text" name="question" onChange={this.handleChange}/>
-  </label>
-  <label>
-    Answer
-    <input type="text" name="answer" onChange={this.handleChange}/>
-  </label>
-  <label>
-    Difficulty
-    <select name="difficulty" onChange={this.handleChange}>
-      <option value="1">1</option>
-      <option value="2">2</option>
-      <option value="3">3</option>
-      <option value="4">4</option>
-      <option value="5">5</option>
-    </select>
-  </label>
-  <label>
-    Category
-    <select name="category" onChange={this.handleChange}>
-      {Object.keys(this.state.categories).map(id => {
-          return (
-            <option key={id} value={id}>{this.state.categories[id]}</option>
-          )
-        })}
-    </select>
-  </label>
-  <input type="submit" className="button" value="Submit" />
-</form> */}
