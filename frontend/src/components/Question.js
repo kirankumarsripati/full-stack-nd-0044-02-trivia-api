@@ -1,4 +1,11 @@
 import React, { Component } from 'react';
+import {
+  Button,
+  Icon,
+  Item,
+  Label,
+} from 'semantic-ui-react'
+
 import '../stylesheets/Question.css';
 
 class Question extends Component {
@@ -16,22 +23,33 @@ class Question extends Component {
   render() {
     const { question, answer, category, difficulty } = this.props;
     return (
-      <div className="Question-holder">
-        <div className="Question">{question}</div>
-        <div className="Question-status">
-          <img className="category" src={`${category}.svg`}/>
-          <div className="difficulty">Difficulty: {difficulty}</div>
-          <img src="delete.png" className="delete" onClick={() => this.props.questionAction('DELETE')}/>
-          
-        </div>
-        <div className="show-answer button"
-            onClick={() => this.flipVisibility()}>
-            {this.state.visibleAnswer ? 'Hide' : 'Show'} Answer
-          </div>
-        <div className="answer-holder">
-          <span style={{"visibility": this.state.visibleAnswer ? 'visible' : 'hidden'}}>Answer: {answer}</span>
-        </div>
-      </div>
+      <Item>
+        <Item.Content>
+          <Item.Header>{question}</Item.Header>
+          <Item.Description as='h2'
+            style={{"display": this.state.visibleAnswer ? 'block' : 'none'}}>
+              Answer: {answer}
+          </Item.Description>
+          <Item.Extra>
+            <Label>
+              <img
+                className="category"
+                src={`${category}.svg`}
+                alt={category}
+              />
+              {category}
+            </Label>
+            <Label>Difficulty: {difficulty}</Label>
+            <Button basic color='red' floated='right' onClick={() => this.props.questionAction('DELETE')}>
+              <Icon name="trash alternate outline" /> Delete
+            </Button>
+            <Button primary floated='right'
+              onClick={() => this.flipVisibility()}>
+              {this.state.visibleAnswer ? 'Hide' : 'Show'} Answer
+            </Button>
+          </Item.Extra>
+        </Item.Content>
+      </Item>
     );
   }
 }

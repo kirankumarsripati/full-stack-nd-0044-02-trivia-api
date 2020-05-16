@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import {
   Container,
+  Item,
   Menu,
   Grid,
 } from 'semantic-ui-react'
@@ -148,16 +149,18 @@ class QuestionView extends Component {
             </Grid.Column>
             <Grid.Column compute={12} mobile={12} tablet={9} className="questions-list">
               <h2>Questions</h2>
+              <Item.Group divided>
               {this.state.questions.map((q, ind) => (
                 <Question
-                  key={q.id}
-                  question={q.question}
-                  answer={q.answer}
-                  category={this.state.categories[q.category]}
-                  difficulty={q.difficulty}
-                  questionAction={this.questionAction(q.id)}
+                key={q.id}
+                question={q.question}
+                answer={q.answer}
+                category={this.state.categories[q.category]}
+                difficulty={q.difficulty}
+                questionAction={this.questionAction(q.id)}
                 />
-              ))}
+                ))}
+              </Item.Group>
               <div className="pagination-menu">
                 {this.createPagination()}
               </div>
