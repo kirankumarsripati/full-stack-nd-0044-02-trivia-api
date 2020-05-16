@@ -275,7 +275,8 @@ class TriviaTestCase(unittest.TestCase):
         self.assertTrue(data['question']['question'])
         self.assertTrue(data['question']['id']
                         not in quiz_info['previous_questions'])
-        self.assertTrue(data['question']['category'], quiz_info['quiz_category']['id'])
+        self.assertTrue(data['question']['category'],
+                        quiz_info['quiz_category']['id'])
 
     def test_405_get_quiz(self):
         '''Get quizzes with GET method'''
